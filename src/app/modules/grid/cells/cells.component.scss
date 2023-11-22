@@ -1,0 +1,39 @@
+.cell-color-1 {
+    background-color: #E0FFD2;
+}
+
+.cell-color-2 {
+    background-color: #D8FFB1;
+}
+
+.cell-color-3 {
+    background-color: #C6F9B5;
+}
+
+.cell-color-empty {
+    background-color: #7f7a7a;
+}
+
+.cell {
+    position: relative;
+    width: 10em;
+    height: 10em;
+    cursor: pointer;
+    user-select: none;
+}
+
+.tent-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 8em;
+    transform: translate(-50%, -50%);
+}
+
+.tree-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 6em;
+    transform: translate(-50%, -50%);
+}
