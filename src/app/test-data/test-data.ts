@@ -1,5 +1,5 @@
-import { CellId, CellType } from "../modules/grid/services/cell";
-import { LineId } from "../modules/grid/services/line";
+import { CellId, CellType } from "../grid/basic/cell";
+import { LineId } from "../grid/basic/line";
 export interface TestData {
     name: string;
     width: number;

@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { testLevel1, TestData } from 'src/app/test-data/test-data';
-import { Grid, MAX_TENTS_AMOUNT, MIN_TENTS_AMOUNT } from '../grid/services/grid';
-import { Cell, CellType } from '../grid/services/cell';
-import { Line } from '../grid/services/line';
-import { GridMode } from '../grid/grid.component';
+import { Grid, MAX_TENTS_AMOUNT, MIN_TENTS_AMOUNT } from '../../grid/basic/grid';
+import { Cell, CellType } from '../../grid/basic/cell';
+import { Line } from '../../grid/basic/line';
+import { GridComponent, GridMode } from '../grid/grid.component';
+import { solveGrid } from 'src/app/grid/solver/solver';
 
 @Component({
   selector: 'app-level-solver',
@@ -12,10 +13,11 @@ import { GridMode } from '../grid/grid.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LevelSolverComponent {
+    @ViewChild(GridComponent) gridComp!: GridComponent;
     grid!: Grid;
     GridMode = GridMode;
 
-    constructor() {
+    constructor(private cdr: ChangeDetectorRef) {
         this.initGrid(testLevel1)
     }
 
@@ -33,6 +35,11 @@ export class LevelSolverComponent {
 
     onTentDecrease(line: Line) {
         if (line.tentsAmount - 1 >= MIN_TENTS_AMOUNT) line.tentsAmount--;
+    }
+
+    solve() {
+        solveGrid(this.grid);
+        this.gridComp.cdr.markForCheck();
     }
 
     export() {

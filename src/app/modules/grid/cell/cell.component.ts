@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, HostBinding, Input } from '@angular/core';
-import { CellType } from '../services/cell';
+import { CellType } from '../../../grid/basic/cell';
 
 @Component({
     selector: 'app-cell',

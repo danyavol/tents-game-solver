@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Cell, CellType } from './services/cell';
-import { Grid } from './services/grid';
-import { Line, LineType } from './services/line';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Cell, CellType } from '../../grid/basic/cell';
+import { Grid } from '../../grid/basic/grid';
+import { Line, LineType } from '../../grid/basic/line';
 
 export enum GridMode {
     Edit,
@@ -27,6 +27,8 @@ export class GridComponent implements OnInit {
     rows!: Line[];
     CellType = CellType;
     GridMode = GridMode;
+
+    constructor(public cdr: ChangeDetectorRef) {}
 
     ngOnInit(): void {
         const lines = Array.from(this.grid.lines.values());

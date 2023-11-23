@@ -47,7 +47,7 @@ export class Grid {
                     this.lines.set(rowLine.id, rowLine);
                 }
 
-                const cell = new Cell(posX, posY);
+                const cell = new Cell(posX, posY, this);
                 this.cells.set(cell.id, cell);
 
                 colLine.cells.set(cell.id, cell);
