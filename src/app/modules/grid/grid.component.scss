@@ -16,8 +16,8 @@ $max-grid-size: 20;
         grid-template-columns: repeat(#{$i + 1}, $cell-size);
 
         .rows-value-container {
-            grid-template-columns: repeat(#{$i}, $cell-size);
-            grid-column: 2 / span #{$i};
+            grid-template-rows: repeat(#{$i}, $cell-size);
+            grid-row: 2 / span #{$i};
         }
     }
 }
@@ -27,8 +27,8 @@ $max-grid-size: 20;
         grid-template-rows: 5em repeat(#{$i}, $cell-size);
 
         .columns-value-container {
-            grid-template-rows: repeat(#{$i}, $cell-size);
-            grid-row: 2 / span #{$i};
+            grid-template-columns: repeat(#{$i}, $cell-size);
+            grid-column: 2 / span #{$i};
         }
     }
 }

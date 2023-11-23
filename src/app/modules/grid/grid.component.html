@@ -17,7 +17,7 @@
 </div>
 
 <ng-template #lineInfo let-lines="lines">
-    <div class="line-value" [ngClass]="getLineStatus(line)" *ngFor="let line of lines; trackBy: trackByLines">
+    <div class="line-value" [id]="line.id" [ngClass]="getLineStatus(line)" *ngFor="let line of lines; trackBy: trackByLines">
         <span class="value">{{line.tentsAmount}}</span>
         <div *ngIf="mode !== GridMode.Edit" class="status-icon">
             <svg-icon class="clear" src="assets/icons/clear.svg"></svg-icon>

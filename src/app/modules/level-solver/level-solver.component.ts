@@ -17,7 +17,7 @@ export class LevelSolverComponent {
     grid!: Grid;
     GridMode = GridMode;
 
-    constructor(private cdr: ChangeDetectorRef) {
+    constructor() {
         this.initGrid(testLevel1)
     }
 
@@ -59,7 +59,7 @@ export class LevelSolverComponent {
             result.lines[id] = line.tentsAmount;
         });
 
-        console.log(JSON.stringify(result));
+        console.log(result);
     }
 
     private initGrid(levelData: TestData) {

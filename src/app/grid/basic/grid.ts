@@ -37,13 +37,12 @@ export class Grid {
     private initializeGrid() {
         for (let posY = 0; posY < this.height; posY++) {
 
-            const colLine = new Line(LineType.Column, posY);
-            this.lines.set(colLine.id, colLine);
+            const colLine = new Line(LineType.Row, posY);
 
             for (let posX = 0; posX < this.width; posX++) {
-                let rowLine = this.lines.get(Line.getId(LineType.Row, posX));
+                let rowLine = this.lines.get(Line.getId(LineType.Column, posX));
                 if (!rowLine) {
-                    rowLine = new Line(LineType.Row, posX);
+                    rowLine = new Line(LineType.Column, posX);
                     this.lines.set(rowLine.id, rowLine);
                 }
 
@@ -53,6 +52,8 @@ export class Grid {
                 colLine.cells.set(cell.id, cell);
                 rowLine.cells.set(cell.id, cell);
             }
+
+            this.lines.set(colLine.id, colLine);
         }
     }
 
