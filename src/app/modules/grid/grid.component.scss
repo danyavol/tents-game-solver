@@ -1,3 +1,5 @@
+// GRID GENERAL STYLES
+
 $gap: 1em;
 $cell-size: 10em;
 $min-grid-size: 2;
@@ -22,7 +24,7 @@ $max-grid-size: 20;
 
 @for $i from $min-grid-size through $max-grid-size {
     .h-#{$i} {
-        grid-template-rows: repeat(#{$i + 1}, $cell-size);
+        grid-template-rows: 5em repeat(#{$i}, $cell-size);
 
         .columns-value-container {
             grid-template-rows: repeat(#{$i}, $cell-size);
@@ -31,7 +33,10 @@ $max-grid-size: 20;
     }
 }
 
-.rows-value-container, .columns-value-container {
+// STYLES OF ADDITIONAL TOP AND LEFT LINES
+
+.rows-value-container,
+.columns-value-container {
     display: grid;
     gap: $gap;
 }
@@ -42,10 +47,30 @@ $max-grid-size: 20;
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 0.1em;
+    gap: 0.15em;
+
 
     .value {
         line-height: 0.8;
+        transition: 0.1s ease;
+    }
+
+    .status-icon {
+        position: relative;
+        line-height: 0;
+        width: 0.4em;
+        height: 0.4em;
+
+        svg-icon {
+            position: absolute;
+            opacity: 0;
+            transition: 0.1s ease;
+
+            svg {
+                width: 0.4em;
+                height: 0.4em;
+            }
+        }
     }
 
     .buttons {
@@ -55,8 +80,54 @@ $max-grid-size: 20;
     }
 }
 
-.rows-value-container .line-value {
-    align-items: flex-end;
+.columns-value-container .line-value {
+    flex-direction: row-reverse;
+    justify-content: flex-start;
 }
 
+.tent-arrow-icon svg {
+    display: block;
+    color: #c7c7c7;
+    width: 0.4em;
+    height: 0.4em;
+    transition: color 0.1s ease;
+    cursor: pointer;
+    user-select: none;
 
+    &:hover {
+        color: #828282;
+    }
+}
+
+// STYLES SPECIFIC FOR DIFFERENT MODES
+
+.edit-mode {
+    .columns-value-container .line-value {
+        flex-direction: row;
+        justify-content: flex-end;
+    }
+}
+
+.view-mode, .play-mode {
+    .columns-value-container .line-value:not(.mistake, .complete) {
+        justify-content: flex-start;
+    }
+
+    .line-value {
+        &.complete {
+            color: #b8afa6;
+
+            .check {
+                opacity: 1
+            }
+        }
+
+        &.mistake {
+            color: #ed3c3c;
+
+            .clear {
+                opacity: 1
+            }
+        }
+    }
+}

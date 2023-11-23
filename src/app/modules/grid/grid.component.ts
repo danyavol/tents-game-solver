@@ -1,8 +1,13 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
-import { Cell, CellType } from 'src/app/grid-services/cell';
-import { Grid, MAX_TENTS_AMOUNT, MIN_TENTS_AMOUNT } from 'src/app/grid-services/grid';
-import { Line, LineType } from 'src/app/grid-services/line';
-import { TestData } from './interfaces';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Cell, CellType } from './services/cell';
+import { Grid } from './services/grid';
+import { Line, LineType } from './services/line';
+
+export enum GridMode {
+    Edit,
+    View,
+    Play
+}
 
 @Component({
     selector: 'app-grid',
@@ -11,17 +16,22 @@ import { TestData } from './interfaces';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GridComponent implements OnInit {
-    @Input() levelData!: TestData;
+    @Input() grid!: Grid;
+    @Input() mode = GridMode.Edit;
 
-    grid!: Grid;
+    @Output() onCellClick = new EventEmitter<{ cell: Cell, event: MouseEvent }>();
+    @Output() onTentIncrease = new EventEmitter<Line>();
+    @Output() onTentDecrease = new EventEmitter<Line>();
+
     columns!: Line[];
     rows!: Line[];
     CellType = CellType;
-
-    constructor(private cdr: ChangeDetectorRef) {}
+    GridMode = GridMode;
 
     ngOnInit(): void {
-        this.initLevelData();
+        const lines = Array.from(this.grid.lines.values());
+        this.columns = lines.filter(line => line.type === LineType.Column);
+        this.rows = lines.filter(line => line.type === LineType.Row);
     }
 
     trackByCells(_index: number, cell: Cell) {
@@ -32,62 +42,16 @@ export class GridComponent implements OnInit {
         return line.id;
     }
 
-    onCellClick(cell: Cell, event: MouseEvent) {
-        if (event.shiftKey) {
-            if (cell.type === CellType.Tree) {
-                cell.type = CellType.Empty;
-            } else {
-                cell.type = CellType.Tree;
-            }
-            return;
-        }
-
-        switch (cell.type) {
-            case CellType.Empty:
-                cell.type = CellType.Grass;
-                break;
-            case CellType.Grass:
-                cell.type = CellType.Tent;
-                break;
-            case CellType.Tent:
-                cell.type = CellType.Empty;
-        }
+    cellClickHandler(cell: Cell, event: MouseEvent) {
+        this.onCellClick.emit({ cell, event });
     }
 
-    increaseTents(line: Line) {
-        if (line.tentsAmount + 1 <= MAX_TENTS_AMOUNT) line.tentsAmount++;
-    }
+    getLineStatus(line: Line) {
+        let currentTentsAmount = 0;
+        line.cells.forEach(cell => cell.type === CellType.Tent ? currentTentsAmount++ : null);
 
-    decreaseTents(line: Line) {
-        if (line.tentsAmount - 1 >= MIN_TENTS_AMOUNT) line.tentsAmount--;
-    }
-
-    export() {
-        const result = {
-            name: 'Unknown grid',
-            width: this.grid.width,
-            height: this.grid.height,
-            cells: {} as any,
-            lines: {} as any
-        };
-
-        this.grid.cells.forEach((cell, id) => {
-            result.cells[id] = cell.type;
-        });
-
-        this.grid.lines.forEach((line, id) => {
-            result.lines[id] = line.tentsAmount;
-        });
-
-        console.log(JSON.stringify(result));
-    }
-
-    private initLevelData() {
-        this.grid = new Grid(this.levelData.width, this.levelData.height);
-        this.grid.initLevelCells(this.levelData.cells);
-        this.grid.initLevelLines(this.levelData.lines);
-        const lines = Array.from(this.grid.lines.values());
-        this.columns = lines.filter(line => line.type === LineType.Column);
-        this.rows = lines.filter(line => line.type === LineType.Row);
+        if (currentTentsAmount === line.tentsAmount) return "complete";
+        if (currentTentsAmount > line.tentsAmount) return "mistake";
+        return "";
     }
 }

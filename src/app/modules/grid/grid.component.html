@@ -1,30 +1,31 @@
-<div class="grid-container w-{{levelData.width}} h-{{levelData.height}}">
+<div class="grid-container w-{{grid.width}} h-{{grid.height}}"
+    [ngClass]="{
+        'view-mode': mode === GridMode.View,
+        'edit-mode': mode === GridMode.Edit,
+        'play-mode': mode === GridMode.Play,
+    }"
+>
     <div class="rows-value-container">
         <ng-container [ngTemplateOutlet]="lineInfo" [ngTemplateOutletContext]="{lines: rows}"></ng-container>
     </div>
     <div class="columns-value-container">
         <ng-container [ngTemplateOutlet]="lineInfo" [ngTemplateOutletContext]="{lines: columns}"></ng-container>
     </div>
-    <ng-container *ngFor="let cell of grid.cells.values(); trackBy: trackByCells" [ngSwitch]="cell.type">
-        <app-empty class="cell" data-id="{{cell.id}}" (click)="onCellClick(cell, $event)"
-            *ngSwitchCase="CellType.Empty"></app-empty>
-        <app-grass class="cell" data-id="{{cell.id}}" (click)="onCellClick(cell, $event)"
-            *ngSwitchCase="CellType.Grass"></app-grass>
-        <app-tent class="cell" data-id="{{cell.id}}" (click)="onCellClick(cell, $event)"
-            *ngSwitchCase="CellType.Tent"></app-tent>
-        <app-tree class="cell" data-id="{{cell.id}}" (click)="onCellClick(cell, $event)"
-            *ngSwitchCase="CellType.Tree"></app-tree>
+    <ng-container *ngFor="let cell of grid.cells.values(); trackBy: trackByCells">
+        <app-cell (click)="cellClickHandler(cell, $event)" [clickable]="mode !== GridMode.View" [id]="cell.id" [cellType]="cell.type"></app-cell>
     </ng-container>
 </div>
 
 <ng-template #lineInfo let-lines="lines">
-    <div class="line-value" *ngFor="let line of lines; trackBy: trackByLines">
+    <div class="line-value" [ngClass]="getLineStatus(line)" *ngFor="let line of lines; trackBy: trackByLines">
         <span class="value">{{line.tentsAmount}}</span>
-        <div class="buttons">
-            <arrow-up-btn (click)="increaseTents(line)"></arrow-up-btn>
-            <arrow-down-btn (click)="decreaseTents(line)"></arrow-down-btn>
+        <div *ngIf="mode !== GridMode.Edit" class="status-icon">
+            <svg-icon class="clear" src="assets/icons/clear.svg"></svg-icon>
+            <svg-icon class="check" src="assets/icons/check.svg"></svg-icon>
+        </div>
+        <div class="buttons" *ngIf="mode === GridMode.Edit">
+            <svg-icon class="tent-arrow-icon" src="assets/icons/arrow_drop_up.svg" (click)="onTentIncrease.emit(line)"></svg-icon>
+            <svg-icon class="tent-arrow-icon" src="assets/icons/arrow_drop_down.svg" (click)="onTentDecrease.emit(line)"></svg-icon>
         </div>
     </div>
 </ng-template>
-
-<button (click)="export()">Export</button>

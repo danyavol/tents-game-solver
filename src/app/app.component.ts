@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { testLevel1 } from './test-data/test-data';
+import { testLevel1, testLevel2, testLevel3 } from './test-data/test-data';
 
 @Component({
     selector: 'app-root',
@@ -8,5 +8,5 @@ import { testLevel1 } from './test-data/test-data';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
-    testLevel1 = testLevel1;
+    testLevel1 = testLevel3;
 }

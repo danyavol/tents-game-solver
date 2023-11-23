@@ -1,4 +1,12 @@
-import { TestData } from "../modules/grid/interfaces";
+import { CellId, CellType } from "../modules/grid/services/cell";
+import { LineId } from "../modules/grid/services/line";
+export interface TestData {
+    name: string;
+    width: number;
+    height: number;
+    cells: {[key: CellId]: CellType};
+    lines: {[key: LineId]: number};
+}
 
 export const testLevel1: TestData = {"name":"Level 5x5 A5","width":5,"height":5,"cells":{"0x0":0,"1x0":0,"2x0":0,"3x0":0,"4x0":3,"0x1":0,"1x1":3,"2x1":0,"3x1":0,"4x1":0,"0x2":3,"1x2":0,"2x2":0,"3x2":0,"4x2":0,"0x3":0,"1x3":3,"2x3":0,"3x3":0,"4x3":0,"0x4":0,"1x4":0,"2x4":0,"3x4":3,"4x4":0},"lines":{"c0":0,"r0":2,"r1":0,"r2":1,"r3":0,"r4":2,"c1":3,"c2":0,"c3":1,"c4":1}};
 

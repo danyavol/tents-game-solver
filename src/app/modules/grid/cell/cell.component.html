@@ -1,0 +1,11 @@
+<ng-container [ngSwitch]="cellType">
+    <div *ngSwitchCase="CellType.Empty" class="cell cell-color-empty"></div>
+    <div *ngSwitchCase="CellType.Grass" class="cell cell-color-{{ cellColor }}"></div>
+    <div *ngSwitchCase="CellType.Tent" class="cell cell-color-{{ cellColor }}">
+        <svg-icon class="tent-icon" src="assets/icons/tent.svg" />
+    </div>
+    <div *ngSwitchCase="CellType.Tree" class="cell cell-color-{{ cellColor }}">
+        <svg-icon class="tree-icon" src="assets/icons/tree.svg" />
+    </div>
+</ng-container>
+
