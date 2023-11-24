@@ -1,7 +1,7 @@
 import { CellType } from '../basic/cell';
 import { Grid } from '../basic/grid';
 import { Line } from '../basic/line';
-import { cellTypeName, logSet } from '../debug-helpers';
+import { logCombinations, logSet } from '../debug-helpers';
 
 const debug = true;
 
@@ -13,7 +13,7 @@ export function solveGrid(grid: Grid): void {
 
 // STEP #1. Fill all grass fields, which doesn't have trees near
 function fillInitialGrass(grid: Grid) {
-    if (debug) console.log("___STEP #1___FILL GRASS FIELDS WITHOUT TREES NEARBY");
+    if (debug) console.log("\n\n___STEP #1___FILL GRASS FIELDS WITHOUT TREES NEARBY\n\n");
     grid.cells.forEach((cell) => {
         if (cell.type === CellType.Tree || cell.nearest4Cells.some((c) => c.type === CellType.Tree)) return;
         cell.type = CellType.Grass;
@@ -23,7 +23,7 @@ function fillInitialGrass(grid: Grid) {
 
 // STEP #2. Fill all lines with grass, which have 0 tents
 function fillZeroLinesWithGrass(grid: Grid) {
-    if (debug) console.log("___STEP #2___FILL GRASS FOR LINES WITHOUT TENTS");
+    if (debug) console.log("\n\n___STEP #2___FILL GRASS FOR LINES WITHOUT TENTS\n\n");
     grid.lines.forEach((line) => {
         if (line.tentsAmount > 0) return;
 
@@ -38,7 +38,7 @@ function fillZeroLinesWithGrass(grid: Grid) {
 
 // STEP #3. Fill lines based on possible options
 function fillByLinesRestrictions(grid: Grid) {
-    if (debug) console.log("___STEP #3___FILL LINES BASED ON POSSIBLE OPTIONS");
+    if (debug) console.log("\n\n___STEP #3___FILL LINES BASED ON POSSIBLE OPTIONS\n\n");
     grid.lines.forEach((line) => {
         getPossibleLineCombinations(line);
     });
@@ -58,9 +58,26 @@ function getPossibleLineCombinations(line: Line) {
         });
         return;
     }
-    if (debug) console.log(`[line ${line.id}]: ${combinations.length} combinations found`);
 
-    // TODO: Add more complex conditions
+    // Next step is to remove impossible combinations, examples:
+    // - tent is placed near another tent (in current line or nearby (we should count nearest 8 cells))
+    // - 2 tents have only one potential tree to be linked to
+    // - at least 1 tent has no unlinked trees nearby
+    // TODO
+
+    // At this step if in every possible combination we always have 1 or more tents
+    // in some cell - then we place a tent there
+    // TODO
+
+    // Also we should calculate grass position for each tent placement combination
+    // And if we alway have 1 or more grass in the same cell - then we place a grass there
+    // TODO
+
+    // If we updated one of the cells in current function - mark this cell as dirty
+    // so every entity which is dependent on this cell can be recalculated in future
+    // TODO
+
+    if (debug) logCombinations(line.id, freeCells, combinations);
 }
 
 // Returns all possible combinations of placing tents and grass inside of the line

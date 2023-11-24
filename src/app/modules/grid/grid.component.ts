@@ -47,13 +47,4 @@ export class GridComponent implements OnInit {
     cellClickHandler(cell: Cell, event: MouseEvent) {
         this.onCellClick.emit({ cell, event });
     }
-
-    getLineStatus(line: Line) {
-        let currentTentsAmount = 0;
-        line.cells.forEach(cell => cell.type === CellType.Tent ? currentTentsAmount++ : null);
-
-        if (currentTentsAmount === line.tentsAmount) return "complete";
-        if (currentTentsAmount > line.tentsAmount) return "mistake";
-        return "";
-    }
 }

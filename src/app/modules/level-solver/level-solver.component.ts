@@ -6,6 +6,7 @@ import { Line } from '../../grid/basic/line';
 import { GridComponent, GridMode } from '../grid/grid.component';
 import { solveGrid } from 'src/app/grid/solver/solver';
 
+declare var window: Window & { grid: Grid };
 @Component({
   selector: 'app-level-solver',
   templateUrl: './level-solver.component.html',
@@ -71,5 +72,7 @@ export class LevelSolverComponent {
         this.grid = new Grid(levelData.width, levelData.height);
         this.grid.initLevelCells(levelData.cells);
         this.grid.initLevelLines(levelData.lines);
+
+        window.grid = this.grid;
     }
 }
