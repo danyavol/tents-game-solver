@@ -1,6 +1,9 @@
 import { CellType } from '../basic/cell';
 import { Grid } from '../basic/grid';
 import { Line } from '../basic/line';
+import { cellTypeName, logSet } from '../debug-helpers';
+
+const debug = true;
 
 export function solveGrid(grid: Grid): void {
     fillInitialGrass(grid);
@@ -8,76 +11,78 @@ export function solveGrid(grid: Grid): void {
     fillByLinesRestrictions(grid);
 }
 
+// STEP #1. Fill all grass fields, which doesn't have trees near
 function fillInitialGrass(grid: Grid) {
+    if (debug) console.log("___STEP #1___FILL GRASS FIELDS WITHOUT TREES NEARBY");
     grid.cells.forEach((cell) => {
-        if (
-            cell.type === CellType.Tree ||
-            cell.nearest4Cells.some((c) => c.type === CellType.Tree)
-        )
-            return;
-
+        if (cell.type === CellType.Tree || cell.nearest4Cells.some((c) => c.type === CellType.Tree)) return;
         cell.type = CellType.Grass;
+        if (debug) logSet(cell);
     });
 }
 
+// STEP #2. Fill all lines with grass, which have 0 tents
 function fillZeroLinesWithGrass(grid: Grid) {
+    if (debug) console.log("___STEP #2___FILL GRASS FOR LINES WITHOUT TENTS");
     grid.lines.forEach((line) => {
         if (line.tentsAmount > 0) return;
 
         line.cells.forEach((cell) => {
             if (cell.type === CellType.Empty) {
                 cell.type = CellType.Grass;
+                if (debug) logSet(cell);
             }
         });
     });
 }
 
+// STEP #3. Fill lines based on possible options
 function fillByLinesRestrictions(grid: Grid) {
+    if (debug) console.log("___STEP #3___FILL LINES BASED ON POSSIBLE OPTIONS");
     grid.lines.forEach((line) => {
         getPossibleLineCombinations(line);
     });
 }
 
 function getPossibleLineCombinations(line: Line) {
-    const freeCells = Array.from(line.cells.values()).filter(
-        (c) => c.type === CellType.Empty
-    );
-    const freeCellsAmount = freeCells.length;
+    const freeCells = Array.from(line.cells.values()).filter((c) => c.type === CellType.Empty);
+    const freeCellsAmount = freeCells.length; //
 
-    function getPossibleCombinations(fieldSize: number, cellsAmount: number) {
-        const combinations: string[] = [];
+    const combinations = getPossibleCombinations(freeCellsAmount, line.tentsLeft);
+    if (combinations.length === 1) {
+        // The only one possible option. Just fill in it
+        if (debug) console.log(`[line ${line.id}]: Only 1 possible combination found`);
+        freeCells.forEach((cell, index) => {
+            cell.type = combinations[0][index];
+            if (debug) logSet(cell);
+        });
+        return;
+    }
+    if (debug) console.log(`[line ${line.id}]: ${combinations.length} combinations found`);
 
-        function generateCombinations(
-            currentCombo: string,
-            onesLeft: number,
-            zerosLeft: number
-        ) {
-            if (onesLeft === 0 && zerosLeft === 0) {
-                combinations.push(currentCombo);
-                return;
-            }
+    // TODO: Add more complex conditions
+}
 
-            if (onesLeft > 0) {
-                generateCombinations(
-                    currentCombo + '1',
-                    onesLeft - 1,
-                    zerosLeft
-                );
-            }
+// Returns all possible combinations of placing tents and grass inside of the line
+// If the output array is empty - the line is complete, no need to fill anything there
+function getPossibleCombinations(emptyCellsAmount: number, tentsAmount: number) {
+    const combinations: CellType[][] = [];
 
-            if (zerosLeft > 0) {
-                generateCombinations(
-                    currentCombo + '0',
-                    onesLeft,
-                    zerosLeft - 1
-                );
-            }
+    const generateCombinations = (currentCombo: CellType[], onesLeft: number, zerosLeft: number) => {
+        if (onesLeft === 0 && zerosLeft === 0) {
+            if (currentCombo.length) combinations.push(currentCombo);
+            return;
         }
 
-        generateCombinations('', cellsAmount, fieldSize - cellsAmount);
-        return combinations;
-    }
+        if (onesLeft > 0) {
+            generateCombinations([...currentCombo, CellType.Tent], onesLeft - 1, zerosLeft);
+        }
 
-    const result = getPossibleCombinations(freeCellsAmount, line.tentsAmount);
-    console.log(line.id, Array.from(line.cells.values()).map(c => c.id), line.type, result);
+        if (zerosLeft > 0) {
+            generateCombinations([...currentCombo, CellType.Grass], onesLeft, zerosLeft - 1);
+        }
+    };
+
+    generateCombinations([], tentsAmount, emptyCellsAmount - tentsAmount);
+    return combinations;
 }

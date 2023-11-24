@@ -34,6 +34,11 @@ export class Grid {
         }
     }
 
+    destroy(): void {
+        this.lines.forEach(line => line.destroy());
+        this.cells.forEach(cell => cell.destroy());
+    }
+
     private initializeGrid() {
         for (let posY = 0; posY < this.height; posY++) {
 
