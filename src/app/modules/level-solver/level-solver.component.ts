@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
-import { testLevel1, TestData } from 'src/app/test-data/test-data';
+import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
+import { TestData, testLevel2 } from 'src/app/test-data/test-data';
 import { Grid, MAX_TENTS_AMOUNT, MIN_TENTS_AMOUNT } from '../../grid/basic/grid';
 import { Cell, CellType } from '../../grid/basic/cell';
 import { Line } from '../../grid/basic/line';
@@ -17,11 +17,15 @@ export class LevelSolverComponent {
     grid!: Grid;
     GridMode = GridMode;
 
+    mode = GridMode.Edit;
+
     constructor() {
-        this.initGrid(testLevel1)
+        this.initGrid(testLevel2)
     }
 
     onCellClick({ cell }: { cell: Cell }) {
+        if (this.mode === GridMode.View) return;
+
         if (cell.type === CellType.Tree) {
             cell.type = CellType.Empty;
         } else {
@@ -39,6 +43,7 @@ export class LevelSolverComponent {
 
     solve() {
         solveGrid(this.grid);
+        this.mode = GridMode.View;
         this.gridComp.cdr.markForCheck();
     }
 
@@ -59,7 +64,7 @@ export class LevelSolverComponent {
             result.lines[id] = line.tentsAmount;
         });
 
-        console.log(result);
+        console.log(JSON.stringify(result));
     }
 
     private initGrid(levelData: TestData) {
