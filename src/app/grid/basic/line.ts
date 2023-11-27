@@ -1,16 +1,10 @@
-import { BehaviorSubject, Subject, pairwise, takeUntil } from "rxjs";
+import { Subject, pairwise, takeUntil } from "rxjs";
 import { CellType, type Cell, type CellId } from "./cell";
 import { getMapProxy } from "../map-proxy";
 
 export enum LineType {
     Row,
     Column
-}
-
-export enum LineStatus {
-    Incomplete,
-    Complete,
-    Mistake
 }
 
 export type LineId = `r${number}` | `c${number}`;
@@ -45,14 +39,13 @@ export class Line {
         return this._tentsAmount - this._tentsPlaced;
     }
 
-    get status() {
-        return this.status$.value;
-    }
-    set status(value: LineStatus) {
-        this.status$.next(value);
+    get isCompleted(): boolean {
+        return this.tentsLeft === 0;
     }
 
-    status$ = new BehaviorSubject(LineStatus.Complete);
+    get hasMistake(): boolean {
+        return this.tentsPlaced > this.tentsAmount;
+    }
 
     readonly cells = getMapProxy(new Map<CellId, Cell>(), {
         onSet: ({ value: cell }) => {

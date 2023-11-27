@@ -3,6 +3,7 @@ import { Cell, CellType } from '../basic/cell';
 import { Grid } from '../basic/grid';
 import { logSet } from '../debug-helpers';
 import { solveLine } from './solve-line';
+import { Line, LineType } from '../basic/line';
 
 export * from './interface';
 
@@ -13,9 +14,18 @@ export function solveGrid(grid: Grid): void {
 
     fillInitialGrass(grid);
     fillZeroLinesWithGrass(grid);
-    fillByLinesRestrictions(grid);
+    fillByLinesRestrictions(grid, dirtyCells);
 
-    // TODO: And now go through the dirtyCells until it empty or grid solved
+    while (dirtyCells.length) {
+        const dirtyLines = getDirtyLines(grid, dirtyCells);
+        dirtyCells.length = 0;
+
+        dirtyLines.forEach(line => {
+            solveLine(line, dirtyCells);
+        });
+    }
+
+    checkIfGridCompleted(grid);
 }
 
 // STEP #1. Fill all grass fields, which doesn't have trees near
@@ -44,9 +54,31 @@ function fillZeroLinesWithGrass(grid: Grid) {
 }
 
 // STEP #3. Fill lines based on possible options
-function fillByLinesRestrictions(grid: Grid) {
+function fillByLinesRestrictions(grid: Grid, dirtyCells: Cell[]) {
     if (debug) console.log('\n\n___STEP #3___FILL LINES BASED ON POSSIBLE OPTIONS\n\n');
     grid.lines.forEach((line) => {
-        solveLine(line);
+        solveLine(line, dirtyCells);
     });
+}
+
+function getDirtyLines(grid: Grid, dirtyCells: Cell[]): Line[] {
+    const lineSet = new Set<Line>();
+
+    dirtyCells.forEach(cell => {
+        let line = grid.lines.get(Line.getId(LineType.Column, cell.x));
+        if (line) lineSet.add(line);
+
+        line = grid.lines.get(Line.getId(LineType.Row, cell.y));
+        if (line) lineSet.add(line);
+    });
+
+    return Array.from(lineSet);
+}
+
+function checkIfGridCompleted(grid: Grid): void {
+    for (let line of grid.lines.values()) {
+        if (!line.isCompleted) return console.log("❌❌❌ Wasn't able to solve the grid :( ❌❌❌");
+    }
+
+    console.log("✅✅✅ Solved the grid successfully!!! ✅✅✅");
 }
