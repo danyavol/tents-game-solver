@@ -1,17 +1,22 @@
 import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
-import { TestData, testLevel2 } from 'src/app/test-data/test-data';
+import { TestData, testLevel1, testLevel2, testLevels } from 'src/app/test-data/test-data';
 import { Grid, MAX_TENTS_AMOUNT, MIN_TENTS_AMOUNT } from '../../grid/basic/grid';
 import { Cell, CellType } from '../../grid/basic/cell';
 import { Line } from '../../grid/basic/line';
 import { GridComponent, GridMode } from '../grid/grid.component';
 import { solveGrid } from 'src/app/grid/solver';
+import { CommonModule } from '@angular/common';
+import { GridModule } from '../grid/grid.module';
+import { ActivatedRoute, Router } from '@angular/router';
 
 declare var window: Window & { grid: Grid };
 @Component({
-  selector: 'app-level-solver',
-  templateUrl: './level-solver.component.html',
-  styleUrls: ['./level-solver.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    standalone: true,
+    selector: 'app-level-solver',
+    templateUrl: './level-solver.component.html',
+    styleUrls: ['./level-solver.component.scss'],
+    imports: [GridModule, CommonModule],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LevelSolverComponent {
     @ViewChild(GridComponent) gridComp!: GridComponent;
@@ -20,8 +25,16 @@ export class LevelSolverComponent {
 
     mode = GridMode.Edit;
 
-    constructor() {
-        this.initGrid(testLevel2)
+    constructor(route: ActivatedRoute, router: Router) {
+        const { w, h, l } = route.snapshot.queryParams;
+
+        if (l != null) {
+            this.initGrid(testLevels[l]);
+        } else if (w && h) {
+            this.grid = new Grid(parseInt(w), parseInt(h));
+        } else {
+            router.navigate(['/level-selector']);
+        }
     }
 
     onCellClick({ cell }: { cell: Cell }) {
@@ -54,7 +67,7 @@ export class LevelSolverComponent {
             width: this.grid.width,
             height: this.grid.height,
             cells: {},
-            lines: {}
+            lines: {},
         };
 
         this.grid.cells.forEach((cell, id) => {

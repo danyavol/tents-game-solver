@@ -1,0 +1,20 @@
+<h2>Generate custom level</h2>
+<p>Enter level Width, Height and press Generate</p>
+<form class="custom-level-selector" [formGroup]="form">
+    <input type="number" formControlName="width" [min]="MIN_GRID_SIZE" [max]="MAX_GRID_SIZE" placeholder="Width" />
+    <input type="number" formControlName="height" [min]="MIN_GRID_SIZE" [max]="MAX_GRID_SIZE" placeholder="Height" />
+    <button type="submit" (click)="onGenerate()">Generate</button>
+</form>
+
+<div class="divider">
+    <span class="line"></span>
+    <p>OR</p>
+    <span class="line"></span>
+</div>
+
+<h2>Choose predefined level</h2>
+<p>Click on one of the predefined levels</p>
+<div class="predefined-level-selector">
+    <a routerLink="/level-solver" [queryParams]="{ l: index }" *ngFor="let level of levels; index as index">[{{index}}] {{level.name}}</a>
+</div>
+
