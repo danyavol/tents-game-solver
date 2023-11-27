@@ -33,31 +33,38 @@ export class Cell {
     }
     type$ = new BehaviorSubject(CellType.Empty);
 
-    get rightCell() {
-        return this.grid.cells.get(Cell.getId(this.x+1, this.y));
-    }
-
-    get leftCell() {
-        return this.grid.cells.get(Cell.getId(this.x-1, this.y));
-    }
-
-    get topCell() {
-        return this.grid.cells.get(Cell.getId(this.x, this.y-1));
-    }
-
-    get bottomCell() {
-        return this.grid.cells.get(Cell.getId(this.x, this.y+1));
-    }
-
     get nearest4Cells(): Cell[] {
-        return [this.rightCell, this.leftCell, this.topCell, this.bottomCell].filter(c => c !== undefined) as Cell[];
+        return [
+            this.getCellWithOffset(1, 0),
+            this.getCellWithOffset(-1, 0),
+            this.getCellWithOffset(0, 1),
+            this.getCellWithOffset(0, -1),
+        ].filter(c => c !== undefined) as Cell[];
+    }
+
+    get nearest8Cells(): Cell[] {
+        return [
+            this.getCellWithOffset(1, 1),
+            this.getCellWithOffset(1, -1),
+            this.getCellWithOffset(-1, 1),
+            this.getCellWithOffset(-1, -1),
+            ...this.nearest4Cells
+        ].filter(c => c !== undefined) as Cell[];
     }
 
     constructor(public readonly x: PosX, public readonly y: PosY, private readonly grid: Grid) {}
+
+    /** Check nearest 4 cells (top, bottom, left, right) */
+    isNeighbor4Cell(cell: Cell) {
+        return this.x === cell.x && Math.abs(this.y - cell.y) <= 1
+        || this.y === cell.y && Math.abs(this.x - cell.x) <= 1;
+    }
 
     destroy(): void {
         this.type$.complete();
     }
 
-
+    private getCellWithOffset(xOffset: number, yOffset: number): Cell | undefined {
+        return this.grid.cells.get(Cell.getId(this.x + xOffset, this.y + yOffset));
+    }
 }

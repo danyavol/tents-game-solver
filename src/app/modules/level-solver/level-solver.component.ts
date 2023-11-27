@@ -4,7 +4,7 @@ import { Grid, MAX_TENTS_AMOUNT, MIN_TENTS_AMOUNT } from '../../grid/basic/grid'
 import { Cell, CellType } from '../../grid/basic/cell';
 import { Line } from '../../grid/basic/line';
 import { GridComponent, GridMode } from '../grid/grid.component';
-import { solveGrid } from 'src/app/grid/solver/solver';
+import { solveGrid } from 'src/app/grid/solver';
 
 declare var window: Window & { grid: Grid };
 @Component({
