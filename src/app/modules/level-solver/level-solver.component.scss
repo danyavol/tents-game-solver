@@ -1,5 +1,92 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 30px;
+}
+
+.level-title {
+    margin: 0 0 30px calc(66px + 41px);
+    display: flex;
+    align-items: flex-end;
+    gap: 5px;
+
+    .level-title-input {
+        font-size: 1.5em;
+        font-weight: bold;
+        display: inline-block;
+        position: relative;
+        width: fit-content;
+        min-width: 2em;
+
+        textarea {
+            top: 0;
+            left: 0;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: transparent;
+            border: 0;
+            border-bottom: 1px solid transparent;
+            text-align: center;
+            resize: none;
+            font: inherit;
+            padding: 5px;
+            box-sizing: border-box;
+
+            &:hover {
+                border-bottom: 1px solid black;
+            }
+        }
+
+        &::after {
+            content: attr(data-value) " ";
+            visibility: hidden;
+            display: block;
+            text-align: center;
+            padding: 5px;
+        }
+    }
+
+    .icon {
+        font-size: 31px;
+        padding-bottom: 3.25px;
+        transition: opacity .1s ease;
+
+        &.save {
+            color: #6868ff;
+            cursor: pointer;
+            opacity: 0;
+
+
+            &.visible {
+                opacity: 1;
+            }
+
+            &:hover {
+                color: #4848f2;
+            }
+
+        }
+
+        &.already-saved {
+            opacity: 0;
+            color: green;
+        }
+    }
+
+    .level-title-input:hover + .icon.already-saved, .level-title-input:has(textarea:focus) + .icon.already-saved {
+        opacity: 1;
+    }
+}
+
 .buttons {
-    margin: 20px 0 0 7em;
+    margin-left: 66px;
+    margin-top: 20px;
     display: flex;
     gap: 20px;
+
+    > button {
+        padding: 5px 10px;
+    }
 }

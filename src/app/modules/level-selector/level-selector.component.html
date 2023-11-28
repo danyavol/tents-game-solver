@@ -1,10 +1,14 @@
 <h2>Generate custom level</h2>
 <p>Enter level Width, Height and press Generate</p>
 <form class="custom-level-selector" [formGroup]="form">
-    <input type="number" formControlName="width" [min]="MIN_GRID_SIZE" [max]="MAX_GRID_SIZE" placeholder="Width" />
-    <input type="number" formControlName="height" [min]="MIN_GRID_SIZE" [max]="MAX_GRID_SIZE" placeholder="Height" />
-    <button type="submit" (click)="onGenerate()">Generate</button>
+    <div class="form-wrapper">
+        <input type="number" formControlName="width" [min]="MIN_GRID_SIZE" [max]="MAX_GRID_SIZE" placeholder="Width" />
+        <input type="number" formControlName="height" [min]="MIN_GRID_SIZE" [max]="MAX_GRID_SIZE" placeholder="Height" />
+        <button type="submit" (click)="onGenerate()">Generate</button>
+    </div>
+    <div class="error">Width and height must be between {{MIN_GRID_SIZE}} and {{MAX_GRID_SIZE}}</div>
 </form>
+
 
 <div class="divider">
     <span class="line"></span>

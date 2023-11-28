@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { MAX_GRID_SIZE, MIN_GRID_SIZE } from 'src/app/grid/basic/grid';
-import { testLevels } from 'src/app/test-data/test-data';
+import { LevelsStorageService } from 'src/app/services/levels-storage.service';
 
 const validators = [Validators.required, Validators.min(MIN_GRID_SIZE), Validators.max(MAX_GRID_SIZE)];
 
@@ -16,7 +16,7 @@ const validators = [Validators.required, Validators.min(MIN_GRID_SIZE), Validato
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LevelSelectorComponent {
-    levels = testLevels;
+    levels = inject(LevelsStorageService).levels;
     form = new FormGroup({
         width: new FormControl<number | null>(null, validators),
         height: new FormControl<number | null>(null, validators),

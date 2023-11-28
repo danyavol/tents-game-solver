@@ -1,3 +1,12 @@
+<div class="level-title">
+    <div class="level-title-input" #titleElem>
+        <textarea [formControl]="levelName" rows="1"></textarea>
+    </div>
+    <span class="icon save material-symbols-rounded filled" [class.visible]="!isSaved" (click)="save()">save</span>
+    <!-- <span class="icon already-saved material-symbols-rounded filled" *ngIf="isSaved">check</span> -->
+</div>
+
+
 <app-grid
     [grid]="grid" [mode]="mode"
     (onCellClick)="onCellClick($event)"
@@ -6,8 +15,8 @@
 ></app-grid>
 
 <div class="buttons">
-    <button (click)="solve()">Solve level</button>
-    <button (click)="export()">Export level to Dev Console</button>
+    <button routerLink="/level-selector">Back to levels</button>
+    <button (click)="solve()" *ngIf="!solved">Solve level</button>
 </div>
 
 
